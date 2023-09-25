@@ -2,29 +2,24 @@ import * as React from 'react';
 import {
     Alert, AlertTitle,
     Box, Button,
-    Container, createTheme,
+    Container,
     FormControl, FormControlLabel, FormGroup,
     IconButton, InputAdornment,
     InputLabel,
     OutlinedInput, Switch,
-    TextField, ThemeProvider,
+    TextField,
     Typography
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
-import {loginUser, userSelector, clearMessage, clearError} from "../features/users/usersSlice.jsx";
+import {clearMessage, clearError} from "../features/users/usersSlice.jsx";
+import {selectUser} from "../features/users/usersSelectors.jsx"
+import {loginUser,} from "../features/users/usersThunks.jsx"
 import {useNavigate} from "react-router-dom";
+import {LOGOUT_SUCCESSFUL, SIGNUP_SUCCESSFUL} from "../app/constants.jsx";
+import {validateField} from "../app/functions.jsx";
+import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#214252',
-            // light: will be calculated from palette.primary.main,
-            // dark: will be calculated from palette.primary.main,
-            // contrastText: will be calculated to contrast with palette.primary.main
-        }
-    },
-});
 
 export const Login = () => {
 
@@ -32,7 +27,7 @@ export const Login = () => {
     const navigate = useNavigate()
 
     //redux state
-    const {message, error}= useSelector(userSelector)
+    const {message, error}= useSelector(selectUser)
 
     //local states
     const [background, setBackground] = React.useState('#132838');
@@ -66,18 +61,20 @@ export const Login = () => {
         });
     };
 
+    const handleMessageClose = () => {dispatch(clearMessage())}
+    const handleErrorClose = () => {dispatch(clearError())}
     const getAlertMessage = () => {
-        if (message=== 'Signup Successful'){
+        if (message=== SIGNUP_SUCCESSFUL){
             return(
-                <Alert severity="success"  onClose={() => {dispatch(clearMessage())}}>
+                <Alert severity="success"  onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
                     You account was successfully created — <strong>Login to continue!</strong>
                 </Alert>
             )
         }
-        else if(message === "Logout Successful"){
+        else if(message === LOGOUT_SUCCESSFUL){
             return(
-                <Alert severity="success"  onClose={() => {dispatch(clearMessage())}}>
+                <Alert severity="success"  onClose={() => {handleMessageClose()}}>
                     <AlertTitle>Success</AlertTitle>
                     You were successfully logged out — <strong>Login to continue!</strong>
                 </Alert>
@@ -85,7 +82,7 @@ export const Login = () => {
         }
         else if (error){
             return(
-                <Alert severity="error" onClose={() => {dispatch(clearError())}}>
+                <Alert severity="error" onClose={() => {handleErrorClose()}}>
                     <AlertTitle>Error</AlertTitle>
                     {error}— <strong>Try Again!</strong>
                 </Alert>
@@ -103,30 +100,6 @@ export const Login = () => {
         }
     }
 
-    const validateField = (name, value) => {
-        return new Promise((resolve, reject) => {
-            switch (name) {
-                case 'password':
-                    if (value.trim() === '') {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                case 'email': {
-                    const emailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                    if (!value.match(emailFormat)) {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                }
-                default:
-                    resolve();
-            }
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -137,7 +110,7 @@ export const Login = () => {
         let isSuccess = true;
         for (const fieldName of fieldNames) {
             try {
-                await validateField(fieldName, formValues[fieldName].value);
+                await validateField(formValues,fieldName, formValues[fieldName].value);
                 newFormValues[fieldName].error = false;
             } catch (error) {
                 const fieldName = fieldNames.find((name) => formValues[name].errorMessage === error);
@@ -174,35 +147,19 @@ export const Login = () => {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container sx={{width:'80ch', marginTop: 10,}}>
+        <>
+            <Container sx={formContainer}>
                 {getAlertMessage()}
-                <Box sx = {{border: '3px solid #214252', marginTop: 5, bgcolor:"#fff", borderRadius: '16px'}}>
-                    <Box sx={{
-                        bgcolor: '#214252',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        p:2,
-                        borderRadius: '11px 11px 0px 0px'
-                    }}>
+                <Box sx = {formBorderBox}>
+                    <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>
                             LOGIN
                         </Typography>
                     </Box>
                     <FormGroup>
-                        <FormControlLabel control={<Switch></Switch>}
-                                          label="Dark Mode"
-                                          sx={{pl:55, pt:1,}}
-                                          onClick={toggleTheme}
-                        />
+                        <FormControlLabel control={<Switch></Switch>} label="Dark Mode" sx={{pl:55, pt:1,}} onClick={toggleTheme}/>
                     </FormGroup>
-                    <Box sx={{
-                        display: 'flex', flexWrap: 'wrap',
-                        alignItems: 'center',
-                        pt:1,
-                        pb:2,
-                        px:2}}>
+                    <Box sx={formInnerBox}>
 
                         <form noValidate onSubmit={handleSubmit}>
 
@@ -251,13 +208,7 @@ export const Login = () => {
                                 )}
                             </FormControl>
 
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                pb: 1,
-                                pt:2
-                            }}>
+                            <Box sx={formSubmitButton}>
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -267,6 +218,6 @@ export const Login = () => {
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+        </>
     );
 }

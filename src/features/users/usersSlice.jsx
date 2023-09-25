@@ -1,39 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice,} from "@reduxjs/toolkit";
+import {loginUser, signupUser, updateUser} from "./usersThunks.jsx";
 
-const BASE_URL = "http://127.0.0.1:8000/api"
-const USER_LOGIN_URL = `${BASE_URL}/users/login/`
-const USER_SIGNUP_URL =  `${BASE_URL}/users/signup/`
-
-export const loginUser = createAsyncThunk(
-    'user/loginUser',
-    async (userCredentials) => {
-        const response = await axios.post(USER_LOGIN_URL, userCredentials)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
-        return response.data
-    }
-)
-export const signupUser = createAsyncThunk(
-    'user/signupUser',
-    async (userDetails) => {
-        const response = await axios.post(USER_SIGNUP_URL, userDetails)
-        return response.data
-    }
-)
-
-export const updateUser = createAsyncThunk(
-    'user/updateUser',
-    async (userUpdates) => {
-        const axiosConfig = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        };
-        const response = await axios.put(`${BASE_URL}/users/${localStorage.getItem("userID")}/profile/edit/`, userUpdates, axiosConfig)
-        localStorage.setItem('user', JSON.stringify(response.data.user))
-        return response.data
-    }
-)
 
 const userSlice = createSlice({
     name: "users",
@@ -45,28 +12,20 @@ const userSlice = createSlice({
     },
     reducers:{
         clearMessage: (state) => {
-            return {
-                ...state,
-                message: ""
-            };
+            state.message= ""
         },
         clearError: (state) =>{
-            return {
-                ...state,
-                error: null
-            };
+            state.error = null
         },
-        logout:() =>{
+        logout:(state) =>{
             localStorage.removeItem("user")
             localStorage.removeItem("token")
             localStorage.removeItem("userID")
-            return{
-                loading:false,
-                user:null,
-                error:null,
-                message: 'Logout Successful'
-            }
-        }
+            state.loading=false
+            state.user=null
+            state.error=null
+            state.message='Logout Successful'
+        },
     },
     extraReducers:(builder) => {
         builder
@@ -117,9 +76,10 @@ const userSlice = createSlice({
                 };
             })
             .addCase(updateUser.fulfilled, (state,action) =>{
+                console.log(state.user)
                 return {
                     ...state,
-                    user: action.payload.user,
+                    user: action.payload,
                     message: "Update Successful",
                     error:null
                 }
@@ -134,10 +94,8 @@ const userSlice = createSlice({
     }
 });
 
-export const userSelector = (state) => state.users
-
 export const {clearMessage,
     clearError,
-    logout} = userSlice.actions
+    logout,} = userSlice.actions
 export default userSlice.reducer;
 

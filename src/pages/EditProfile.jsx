@@ -1,31 +1,20 @@
 import * as React from 'react';
 import {
     Alert, AlertTitle, Avatar,
-    Box, Button, Collapse,
+    Box, Button,
     Container, createTheme,
-    FormControl, FormControlLabel, FormGroup,
-    IconButton, InputAdornment,
-    InputLabel,
-    OutlinedInput, Switch,
-    TextField, ThemeProvider,
+    TextField,
     Typography
 } from "@mui/material";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {clearError, clearMessage, updateUser, userSelector} from "../features/users/usersSlice.jsx";
+import {clearError, clearMessage} from "../features/users/usersSlice.jsx";
+import {selectUser} from "../features/users/usersSelectors.jsx"
+import {updateUser} from "../features/users/usersThunks.jsx"
 import {Header} from "../components/Header.jsx";
-
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#214252',
-            // light: will be calculated from palette.primary.main,
-            // dark: will be calculated from palette.primary.main,
-            // contrastText: will be calculated to contrast with palette.primary.main
-        }
-    },
-});
+import {useEffect} from "react";
+import {useEditProfileInitialValues} from "../app/useInitialValues.jsx";
+import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
 
 export const EditProfile = () => {
 
@@ -33,37 +22,13 @@ export const EditProfile = () => {
     const navigate = useNavigate()
 
     //redux state
-    const {user, error}= useSelector(userSelector)
-
-    console.log(user)
+    const {user, error, message}= useSelector(selectUser)
 
 
     //local states
     const [success, setSuccess] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
-    const [formValues, setFormValues] = React.useState({
-        firstName: {
-            value: user? user.first_name: "loading..",
-            error: false,
-            errorMessage: 'You must enter a first name',
-        },
-        lastName: {
-            value: user? user.last_name: "loading..",
-            error: false,
-            errorMessage: 'You must enter a last name',
-        },
-        userBio: {
-            value: user? user.profile.user_bio: "loading...",
-            error: false,
-            errorMessage: 'You must enter your user bio',
-        },
-        email: {
-            value: user? user.email: "loading..."
-        },
-        dplink:{
-            value: user? user.profile.user_dp: null
-        }
-    });
+    const [formValues, setFormValues] = React.useState(useEditProfileInitialValues());
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -81,12 +46,13 @@ export const EditProfile = () => {
         const file = e.target.files[0];
         setSelectedFile(file);
     };
+
+    const handleMessageClose = () => {dispatch(clearMessage())}
+    const handleErrorClose = () => {dispatch(clearError())}
     const getAlertMessage = () => {
-        if (success){
+        if (message){
             return(
-                <Alert severity="success" onClose={() => {
-                    dispatch(clearMessage())
-                    setSuccess(false)}}>
+                <Alert severity="success" onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
                     Your account was successfully updated— <strong>Check it out!</strong>
                 </Alert>
@@ -94,7 +60,7 @@ export const EditProfile = () => {
         }
         else if (error){
             return(
-                <Alert severity="error" onClose={() => {dispatch(clearError())}}>
+                <Alert severity="error" onClose={handleErrorClose}>
                     <AlertTitle>Error</AlertTitle>
                     {error}— <strong>Try Again!</strong>
                 </Alert>
@@ -151,50 +117,30 @@ export const EditProfile = () => {
         }
         else
         {
-            console.log("i am here in editprofile.jx")
             setFormValues(newFormValues);
         }
 
     };
 
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <Header/>
-            <Container sx={{width:'80ch', marginTop: 10,}}>
+            <Container sx={formContainer}>
                 {getAlertMessage()}
-                <Box sx = {{border: '3px solid #214252', marginTop: 5, bgcolor:"#fff", borderRadius: '16px'}}>
-                    <Box sx={{
-                        bgcolor: '#214252',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        p:2,
-                        borderRadius: '11px 11px 0px 0px'
-                    }}>
+                <Box sx = {formBorderBox}>
+                    <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>
                             EDIT PROFILE
                         </Typography>
                     </Box>
-                    <Box sx={{
-                        display: 'flex', flexWrap: 'wrap',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        pt:1,
-                        pb:2,
-                        px:2}}>
+                    <Box sx={formInnerBox}>
 
-                        <Avatar alt="User" src={`${formValues.dplink.value}`} sx={{width: 120, height: 120, mb:1}}/>
+                        <Avatar alt="User" src={`${formValues.dpLink.value}`} sx={{width: 120, height: 120, mb:1}}/>
 
                         <form noValidate onSubmit={handleSubmit}>
 
                             <div style={{display:"flex", alignContent: "center", justifyContent: "center"}}>
-                                <input
-                                    type="file"
-                                    accept=".jpg, .jpeg, .png"
-                                    style={{ display: 'none'}}
-                                    onChange={handleFileSelect}
-                                    id="fileInput"
-                                />
+                                <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>
                                 <label htmlFor="fileInput">
                                     <Button
                                         variant="contained"
@@ -220,7 +166,7 @@ export const EditProfile = () => {
                                 onChange={handleChange}
                                 error={formValues.firstName.error}
                                 helperText={formValues.firstName.error && formValues.firstName.errorMessage}
-                                sx={{ my:1, width: '33ch' }}
+                                sx={{ my:1, width: '33ch',  mr:1 }}
                             />
 
                             <TextField
@@ -264,13 +210,7 @@ export const EditProfile = () => {
                                 sx={{ my:1, width: '70ch'}}
                             />
 
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                pb: 1,
-                                pt:2
-                            }}>
+                            <Box sx={formSubmitButton}>
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -280,6 +220,6 @@ export const EditProfile = () => {
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+        </>
     );
 }

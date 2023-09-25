@@ -1,31 +1,25 @@
 import * as React from 'react';
 import {
     Alert, AlertTitle,
-    Box, Button, Collapse,
-    Container, createTheme,
+    Box, Button,
+    Container,
     FormControl, FormControlLabel, FormGroup,
     IconButton, InputAdornment,
     InputLabel,
     OutlinedInput, Switch,
-    TextField, ThemeProvider,
+    TextField,
     Typography
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {clearError, clearMessage, signupUser, userSelector} from "../features/users/usersSlice.jsx";
+import {clearError, clearMessage,} from "../features/users/usersSlice.jsx"
+import {selectUser} from "../features/users/usersSelectors.jsx"
+import {signupUser} from "../features/users/usersThunks.jsx"
 import {useEffect} from "react";
+import {validateField} from "../app/functions.jsx";
+import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#214252',
-            // light: will be calculated from palette.primary.main,
-            // dark: will be calculated from palette.primary.main,
-            // contrastText: will be calculated to contrast with palette.primary.main
-        }
-    },
-});
 
 export const Signup = () => {
 
@@ -33,7 +27,7 @@ export const Signup = () => {
     const navigate = useNavigate()
 
     //redux state
-    const {message, error}= useSelector(userSelector)
+    const {message, error}= useSelector(selectUser)
 
 
     //local states
@@ -58,10 +52,12 @@ export const Signup = () => {
         dispatch(clearError())
     };
 
+    const handleMessageClose = () => {dispatch(clearMessage())}
+    const handleErrorClose = () => {dispatch(clearError())}
     const getAlertMessage = () => {
         if (success){
             return(
-                <Alert severity="success" onClose={() => {dispatch(clearMessage())}}>
+                <Alert severity="success" onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
                     Your account was successfully created — <strong>Welcome!</strong>
                 </Alert>
@@ -69,7 +65,7 @@ export const Signup = () => {
         }
         else if (error){
             return(
-                <Alert severity="error" onClose={() => {dispatch(clearError())}}>
+                <Alert severity="error" onClose={handleErrorClose}>
                     <AlertTitle>Error</AlertTitle>
                     {error}— <strong>Try Again!</strong>
                 </Alert>
@@ -87,46 +83,6 @@ export const Signup = () => {
         }
     }
 
-    const validateField = (name, value) => {
-        return new Promise((resolve, reject) => {
-            switch (name) {
-                case 'firstName':
-                case 'lastName':
-                case 'userBio':
-                    if (value.trim() === '') {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                case 'email': {
-                    const emailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                    if (!value.match(emailFormat)) {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                }
-                case 'password1':
-                    if (value.trim() === '') {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                case 'password2':
-                    if (value !== formValues.password1.value) {
-                        reject(formValues[name].errorMessage);
-                    } else {
-                        resolve();
-                    }
-                    break;
-                default:
-                    resolve();
-            }
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -137,7 +93,7 @@ export const Signup = () => {
         let isSuccess = true;
         for (const fieldName of fieldNames) {
             try {
-                await validateField(fieldName, formValues[fieldName].value);
+                await validateField(formValues, fieldName, formValues[fieldName].value);
                 newFormValues[fieldName].error = false;
             } catch (error) {
                 const fieldName = fieldNames.find((name) => formValues[name].errorMessage === error);
@@ -169,35 +125,19 @@ export const Signup = () => {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container sx={{width:'80ch', marginTop: 10,}}>
+        <>
+            <Container sx={formContainer}>
                 {getAlertMessage()}
-                <Box sx = {{border: '3px solid #214252', marginTop: 5, bgcolor:"#fff", borderRadius: '16px'}}>
-                    <Box sx={{
-                        bgcolor: '#214252',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        p:2,
-                        borderRadius: '11px 11px 0px 0px'
-                    }}>
+                <Box sx = {formBorderBox}>
+                    <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>
                             SIGN UP
                         </Typography>
                     </Box>
                     <FormGroup>
-                        <FormControlLabel control={<Switch></Switch>}
-                                          label="Dark Mode"
-                                          sx={{pl:55, pt:1,}}
-                                          onClick={toggleTheme}
-                        />
+                        <FormControlLabel control={<Switch></Switch>} label="Dark Mode" sx={{pl:55, pt:1,}} onClick={toggleTheme}/>
                     </FormGroup>
-                    <Box sx={{
-                        display: 'flex', flexWrap: 'wrap',
-                        alignItems: 'center',
-                        pt:1,
-                        pb:2,
-                        px:2}}>
+                    <Box sx={formInnerBox}>
 
                         <form noValidate onSubmit={handleSubmit}>
                             <TextField
@@ -211,7 +151,7 @@ export const Signup = () => {
                                 onChange={handleChange}
                                 error={formValues.firstName.error}
                                 helperText={formValues.firstName.error && formValues.firstName.errorMessage}
-                                sx={{ my:1, width: '33ch' }}
+                                sx={{ my:1, width: '33ch', mr:1}}
                             />
 
                             <TextField
@@ -243,7 +183,7 @@ export const Signup = () => {
                                 sx={{ my:1, width: '70ch'}}
                             />
 
-                            <FormControl sx={{ my:1, width: '33ch'}} fullWidth variant="outlined" required error={formValues.password1.error}>
+                            <FormControl sx={{ my:1, width: '33ch',  mr:1}} fullWidth variant="outlined" required error={formValues.password1.error}>
                                 <InputLabel htmlFor="outlined-adornment-password" sx={{ color: formValues.password1.error ? '#d32f2f' : '#00000099' }}>Password</InputLabel>
                                 <OutlinedInput
                                     name="password1"
@@ -320,13 +260,7 @@ export const Signup = () => {
                                 sx={{ my:1, width: '70ch'}}
                             />
 
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                pb: 1,
-                                pt:2
-                            }}>
+                            <Box sx={formSubmitButton}>
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -336,7 +270,7 @@ export const Signup = () => {
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+        </>
     );
 }
 

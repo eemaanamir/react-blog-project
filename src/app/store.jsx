@@ -9,12 +9,13 @@ const persistConfig = {
     key: 'root',
     storage,
 }
-const persistedUserReducer = persistReducer(persistConfig, usersReducer)
+const persistedUsersReducer = persistReducer(persistConfig, usersReducer)
+const persistedBlogsReducer = persistReducer(persistConfig, blogsReducer)
 
 export const store = configureStore({
     reducer: {
-        users: persistedUserReducer,
-        blogs: blogsReducer
+        users: persistedUsersReducer,
+        blogs: persistedBlogsReducer,
     }
 })
 
