@@ -43,6 +43,7 @@ export const imageListStyle = css`
   width: 416px;
   border-radius: 2px;
   margin-bottom: 15px;
+
 `;
 
 export const topographyMainHeading = css`
@@ -126,4 +127,59 @@ export const userAvatar = css `
   width: 35px;
   height: 35px;
   margin-right: 1rem;
+`;
+
+export const draftSummaryTitle = css`
+  font-family: "Work Sans", sans-serif;
+  font-size: 25px;
+  font-weight: 500; 
+  color: #4D4C7D;
+  margin-top: .8rem; 
+  padding-bottom:2px;
+`;
+
+export const draftEditButton = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 10px;
+  align-self: flex-start;
+`;
+
+export const draftImageListStyle = css`
+  width: 100%;
+  border-radius: 2px;
+  margin-bottom: 15px;
+`;
+
+export const blogDetailHeaderTopic = css `
+  font-family: "Work Sans", sans-serif;
+  font-size:45px;
+  font-weight: 400;
+  color:#fff;
+  margin-top: 1rem;
+  padding-bottom:1.3rem;
+  width: 636px;
+  text-align: center;
+`;
+
+export const blogDetailHeaderInfo = css`
+  font-family: "Work Sans", sans-serif;
+  font-size:13px;
+  font-weight: 400;
+  color: #fff;
+  margin-top: 10px;
+  padding-bottom:1.3rem;
+  max-width: 1300px;
+  margin-right:1rem;
+`;
+
+export const blogDetailContent = css`
+  font-family: "Work Sans", sans-serif;
+  font-size:15px;
+  font-weight: 400;
+  color: gray;
+  margin-top: 2rem;
+  padding-bottom:1.3rem;
+  max-width: 1100px;
 `;

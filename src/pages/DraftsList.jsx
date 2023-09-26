@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react'
 import {
     Alert, AlertTitle,
-    ImageList,
+    Box,
+    Button,
+    ImageList, ImageListItem,
     Typography
 } from "@mui/material"
 import {useDispatch, useSelector} from "react-redux";
@@ -9,45 +11,49 @@ import {useNavigate} from "react-router-dom";
 import {
     selectAllBlogs,
     selectBlogsStatus,
-    selectBlogsError, selectDraftMessage,
+    selectBlogsError, selectDraftMessage, selectAllDrafts, selectDraftStatus,
 } from "../features/blogs/blogsSelector.jsx";
-import {fetchBlogs} from "../features/blogs/blogsThunks.jsx"
+import {fetchBlogDetail, fetchBlogs, fetchDraftList} from "../features/blogs/blogsThunks.jsx"
 import {Header} from "../components/Header.jsx";
 import {RequestStatus} from "../app/constants.jsx";
-import {BlogSummaryView} from "../components/BlogSummaryView.jsx";
-import {topographyMainHeading} from "../emoticonCss.jsx";
+import {
+    draftEditButton,
+    topographyMainHeading
+} from "../emoticonCss.jsx";
+import {DraftSummaryView} from "../components/DraftSummaryView.jsx";
 import {clearBlogMessage} from "../features/blogs/blogsSlice.jsx";
 
 
-export const Home = () => {
+export const DraftsList = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     //redux state
-    const blogs = useSelector(selectAllBlogs)
-    const blogsStatus = useSelector(selectBlogsStatus)
-    const blogsError = useSelector(selectBlogsError)
+    const drafts = useSelector(selectAllDrafts)
+    const draftsStatus = useSelector(selectDraftStatus)
+    const draftsError = useSelector(selectDraftStatus)
     const message = useSelector(selectDraftMessage)
 
     //local states
     const [content, setContent] = React.useState(null);
 
     let newContent;
+
     useEffect(()=>{
-        if (blogsStatus === RequestStatus.IDLE){
-            dispatch(fetchBlogs())
+        if (draftsStatus === RequestStatus.IDLE){
+            dispatch(fetchDraftList())
         }
-        if(blogsStatus === RequestStatus.LOADING){
+        if(draftsStatus === RequestStatus.LOADING){
             newContent = <p>Loading...</p>
             setContent(newContent)
         }
-        else if (blogsStatus === RequestStatus.SUCCEEDED){
-            const sortedBlogs = blogs.slice().sort((a, b) => {
+        else if (draftsStatus === RequestStatus.SUCCEEDED){
+            const sortedBlogs = drafts.slice().sort((a, b) => {
                 const dateA = new Date(a.blog_date_time);
                 const dateB = new Date(b.blog_date_time);
                 return dateB - dateA; // descending order (latest first)
             });
-            newContent = sortedBlogs.map(blog => <BlogSummaryView
+            newContent = sortedBlogs.map(blog => <DraftSummaryView
                 key={blog.id}
                 id ={blog.id}
                 title={blog.blog_title}
@@ -60,11 +66,13 @@ export const Home = () => {
             />)
             setContent(newContent)
         }
-        else if (blogsStatus === RequestStatus.FAILED){
-            newContent = <p>{blogsError}</p>
+        else if (draftsStatus === RequestStatus.FAILED){
+            newContent = <p>{draftsError}</p>
             setContent(newContent)
         }
-    },[blogsStatus,dispatch,blogsError,blogs,navigate])
+    },[draftsStatus,dispatch,draftsError,drafts,navigate])
+
+    const handleNewDraftClick = () => navigate(`/draft-create`)
 
     const handleMessageClose = () => {dispatch(clearBlogMessage())}
     const getAlertMessage = () => {
@@ -72,7 +80,7 @@ export const Home = () => {
             return(
                 <Alert severity="success" onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
-                    Your Blog Was Successfully {message} — <strong>Check it out!</strong>
+                    Your {message} was successfully created— <strong>Check it out!</strong>
                 </Alert>
             )
         }
@@ -83,10 +91,20 @@ export const Home = () => {
             <Header/>
             <div className="mainHomeDiv">
                 {getAlertMessage()}
+                <div style={{display:'flex', flexDirection:'row', marginTop:'1rem'}}>
                 <Typography color="inherit" noWrap sx={topographyMainHeading}>
-                    Blogs
+                    Drafts
                 </Typography>
-                <ImageList cols={3}>
+                <Box sx={draftEditButton}>
+                    <Button
+                        variant="contained"
+                        color= 'primary'
+                        sx={{ml:'65rem'}}
+                        onClick={handleNewDraftClick}
+                    >New Draft</Button>
+                </Box>
+                </div>
+                <ImageList cols={1}>
                     {content}
                 </ImageList>
             </div>

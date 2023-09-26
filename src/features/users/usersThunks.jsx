@@ -1,6 +1,8 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 import {BASE_URL, USER_LOGIN_URL, USER_SIGNUP_URL} from "../../app/constants.jsx";
+import Cookies from 'js-cookie';
+
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -23,7 +25,7 @@ export const updateUser = createAsyncThunk(
     async (userUpdates) => {
         const axiosConfig = {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${Cookies.get('token')}`,
             },
         };
         const response = await axios.put(`${BASE_URL}/users/${localStorage.getItem("userID")}/profile/edit/`, userUpdates, axiosConfig)

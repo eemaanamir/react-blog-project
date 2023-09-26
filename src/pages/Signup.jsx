@@ -47,6 +47,7 @@ export const Signup = () => {
             [name]: {
                 ...formValues[name],
                 value,
+                error:false
             },
         });
         dispatch(clearError())
@@ -128,6 +129,7 @@ export const Signup = () => {
         <>
             <Container sx={formContainer}>
                 {getAlertMessage()}
+                <br/>
                 <Box sx = {formBorderBox}>
                     <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>

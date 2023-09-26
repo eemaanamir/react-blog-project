@@ -1,35 +1,63 @@
 import * as React from 'react';
 import {
-    Alert, AlertTitle, Avatar,
+    Alert, AlertTitle,
     Box, Button,
-    Container, createTheme,
+    Container,FormControlLabel, Switch,
     TextField,
     Typography
 } from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {clearError, clearMessage} from "../features/users/usersSlice.jsx";
-import {selectUser} from "../features/users/usersSelectors.jsx"
-import {updateUser} from "../features/users/usersThunks.jsx"
 import {Header} from "../components/Header.jsx";
 import {useEffect} from "react";
-import {useEditProfileInitialValues} from "../app/useInitialValues.jsx";
+import {useCreateDraftInitialValues,} from "../app/useInitialValues.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
+import {selectDraftError, selectDraftMessage} from "../features/blogs/blogsSelector.jsx";
+import {createDraftBlog, fetchBlogs, fetchDraftList} from "../features/blogs/blogsThunks.jsx";
+import {clearDraftError,} from "../features/blogs/blogsSlice.jsx";
+import {TopicSelector} from "../components/TopicSelector.jsx";
 
-export const EditProfile = () => {
+
+export const DraftCreate = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     //redux state
-    const {user, error, message}= useSelector(selectUser)
+    const message = useSelector(selectDraftMessage)
+    const error = useSelector(selectDraftError)
 
 
     //local states
-    const [success, setSuccess] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
-    const [formValues, setFormValues] = React.useState(useEditProfileInitialValues());
+    const [formValues, setFormValues] = React.useState(useCreateDraftInitialValues());
+    const [isPublished, setIsPublished] = React.useState(false);
 
+    useEffect(()=>{
+        if (message === 'Draft'){
+            dispatch(clearDraftError())
+            dispatch(fetchDraftList())
+            navigate(`/draft-list`)
+        }
+        if (message === 'Published'){
+            dispatch(clearDraftError())
+            dispatch(fetchBlogs())
+            navigate(`/`)
+        }
+    },[dispatch, message, navigate])
+
+    const handleTopicChange = (e) => {
+        const value = e.target.value;
+        setFormValues({
+            ...formValues,
+            ['blog_topic']: {
+                ...formValues['blog_topic'],
+                value,
+                error:false
+            },
+        });
+    };
+    //
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({
@@ -40,7 +68,10 @@ export const EditProfile = () => {
                 error:false
             },
         });
-        dispatch(clearError())
+    };
+
+    const handleSwitchChange = (event) => {
+        setIsPublished(event.target.checked); // Update the local state variable
     };
 
     const handleFileSelect = (e) => {
@@ -48,18 +79,10 @@ export const EditProfile = () => {
         setSelectedFile(file);
     };
 
-    const handleMessageClose = () => {dispatch(clearMessage())}
-    const handleErrorClose = () => {dispatch(clearError())}
+    const handleErrorClose = () => {dispatch(clearDraftError())}
     const getAlertMessage = () => {
-        if (message){
-            return(
-                <Alert severity="success" onClose={handleMessageClose}>
-                    <AlertTitle>Success</AlertTitle>
-                    Your account was successfully updated— <strong>Check it out!</strong>
-                </Alert>
-            )
-        }
-        else if (error){
+
+        if (error){
             return(
                 <Alert severity="error" onClose={handleErrorClose}>
                     <AlertTitle>Error</AlertTitle>
@@ -72,10 +95,17 @@ export const EditProfile = () => {
     const validateField = (name, value) => {
         return new Promise((resolve, reject) => {
             switch (name) {
-                case 'firstName':
-                case 'lastName':
-                case 'userBio':
+                case 'blog_title':
+                case 'blog_summary':
+                case 'blog_content':
                     if (value.trim() === '') {
+                        reject(formValues[name].errorMessage);
+                    } else {
+                        resolve();
+                    }
+                    break;
+                case 'blog_topic':
+                    if (value.trim() === 'Select Topic *') {
                         reject(formValues[name].errorMessage);
                     } else {
                         resolve();
@@ -104,17 +134,17 @@ export const EditProfile = () => {
                 isSuccess = false
             }
         }
-        if (isSuccess){
-            let userUpdates = {
-                first_name:formValues["firstName"]["value"],
-                last_name: formValues["lastName"]["value"],
-                profile:{
-                    user_bio: formValues["userBio"]["value"],
-                    // user_dp: selectedFile? selectedFile: user.profile.user_dp
-                }
+        if (isSuccess)
+        {
+            const blogDeatils = {
+                blog_title: formValues.blog_title.value,
+                blog_type: 'basic',
+                blog_topic: formValues.blog_topic.value,
+                blog_summary: formValues.blog_summary.value,
+                blog_content: formValues.blog_content.value,
+                is_published: isPublished
             }
-            dispatch(updateUser(userUpdates))
-            setSuccess(true)
+            dispatch(createDraftBlog(blogDeatils))
         }
         else
         {
@@ -132,12 +162,10 @@ export const EditProfile = () => {
                 <Box sx = {formBorderBox}>
                     <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>
-                            EDIT PROFILE
+                            CREATE DRAFT
                         </Typography>
                     </Box>
                     <Box sx={formInnerBox}>
-
-                        <Avatar alt="User" src={`${formValues.dpLink.value}`} sx={{width: 120, height: 120, mb:1}}/>
 
                         <form noValidate onSubmit={handleSubmit}>
 
@@ -149,7 +177,7 @@ export const EditProfile = () => {
                                         color= 'primary'
                                         component = "span"
                                         disabled
-                                        >Upload New Picture</Button>
+                                    >Upload Header Image</Button>
                                 </label>
                             </div>
                             <div style={{display:"flex", alignContent: "center", justifyContent: "center", marginBottom:3}}>
@@ -158,57 +186,54 @@ export const EditProfile = () => {
                             </div>
 
                             <TextField
-                                placeholder="Enter your first name"
-                                label="First Name"
-                                name="firstName"
+                                placeholder="Enter the title of your blog"
+                                label="Title"
+                                name="blog_title"
                                 variant="outlined"
                                 fullWidth
                                 required
-                                value={formValues.firstName.value}
+                                value={formValues.blog_title.value}
                                 onChange={handleChange}
-                                error={formValues.firstName.error}
-                                helperText={formValues.firstName.error && formValues.firstName.errorMessage}
-                                sx={{ my:1, width: '33ch',  mr:1 }}
+                                error={formValues.blog_title.error}
+                                helperText={formValues.blog_title.error && formValues.blog_title.errorMessage}
+                                sx={{ my:1, width: '70ch',  mr:1 }}
                             />
+                            <div style={{display:'flex', flexDirection:'row', marginBottom:2}}>
+
+                                <TopicSelector selectedTopic={formValues.blog_topic.value} handleTopicChange={handleTopicChange} errorValue={formValues.blog_topic.error} errorMessage={formValues.blog_topic.errorMessage}/>
+
+                                <FormControlLabel control={<Switch checked ={isPublished} onChange={handleSwitchChange} />} label="Published" sx={{pl:5, pt:1,}}/>
+                            </div>
 
                             <TextField
-                                placeholder="Enter your last name"
-                                label="Last Name"
-                                name="lastName"
+                                placeholder="A short summary of your blog"
+                                label="Summary"
+                                name="blog_summary"
                                 variant="outlined"
                                 fullWidth
                                 required
-                                value={formValues.lastName.value}
+                                multiline
+                                rows={2}
+                                value={formValues.blog_summary.value}
                                 onChange={handleChange}
-                                error={formValues.lastName.error}
-                                helperText={formValues.lastName.error && formValues.lastName.errorMessage}
-                                sx={{ my:1, ml:3, width: '33ch'}}
-                            />
-
-                            <TextField
-                                label="Email Address"
-                                name="email"
-                                variant="outlined"
-                                fullWidth
-                                type="email"
-                                value={formValues.email.value}
+                                error={formValues.blog_summary.error}
+                                helperText={formValues.blog_summary.error && formValues.blog_summary.errorMessage}
                                 sx={{ my:1, width: '70ch'}}
-                                disabled={true}
                             />
 
                             <TextField
-                                placeholder="A short introduction of yourself"
-                                label="User Bio"
-                                name="userBio"
+                                placeholder="Add your blog content here"
+                                label="Content"
+                                name="blog_content"
                                 variant="outlined"
                                 fullWidth
                                 required
                                 multiline
                                 rows={4}
-                                value={formValues.userBio.value}
+                                value={formValues.blog_content.value}
                                 onChange={handleChange}
-                                error={formValues.userBio.error}
-                                helperText={formValues.userBio.error && formValues.userBio.errorMessage}
+                                error={formValues.blog_content.error}
+                                helperText={formValues.blog_content.error && formValues.blog_content.errorMessage}
                                 sx={{ my:1, width: '70ch'}}
                             />
 
@@ -216,7 +241,7 @@ export const EditProfile = () => {
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    color= 'primary'>Save</Button>
+                                    color= 'primary'>Create</Button>
                             </Box>
                         </form>
                     </Box>

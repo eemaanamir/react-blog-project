@@ -96,6 +96,6 @@ const userSlice = createSlice({
 
 export const {clearMessage,
     clearError,
-    logout,} = userSlice.actions
+    logout} = userSlice.actions
 export default userSlice.reducer;
 

@@ -74,7 +74,7 @@ export const Login = () => {
         }
         else if(message === LOGOUT_SUCCESSFUL){
             return(
-                <Alert severity="success"  onClose={() => {handleMessageClose()}}>
+                <Alert severity="success"  onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
                     You were successfully logged out — <strong>Login to continue!</strong>
                 </Alert>
@@ -82,7 +82,7 @@ export const Login = () => {
         }
         else if (error){
             return(
-                <Alert severity="error" onClose={() => {handleErrorClose()}}>
+                <Alert severity="error" onClose={handleErrorClose}>
                     <AlertTitle>Error</AlertTitle>
                     {error}— <strong>Try Again!</strong>
                 </Alert>
@@ -150,6 +150,7 @@ export const Login = () => {
         <>
             <Container sx={formContainer}>
                 {getAlertMessage()}
+                <br/>
                 <Box sx = {formBorderBox}>
                     <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>

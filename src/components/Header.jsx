@@ -15,6 +15,8 @@ import {logout} from "../features/users/usersSlice.jsx";
 import {selectUser} from "../features/users/usersSelectors.jsx"
 import {HeaderButton} from "./HeaderButton.jsx";
 import {appBar, blogyHeading, headerUserAvatar, menuButton,} from "../emoticonCss.jsx";
+import {resetBlogsSlice} from "../features/blogs/blogsSlice.jsx";
+import {fetchBlogs, fetchDraftList} from "../features/blogs/blogsThunks.jsx";
 
 
 export const Header = () => {
@@ -36,13 +38,21 @@ export const Header = () => {
     };
 
     const handleLogout = () => {
+        dispatch(resetBlogsSlice())
         dispatch(logout())
         navigate(`/login`)
     }
 
     const handleEditProfileClick = () => navigate(`/edit-profile`)
 
-    const handleHomeClick = ()=>navigate(`/`)
+    const handleHomeClick = ()=> {
+        dispatch(fetchBlogs())
+        navigate(`/`)
+    }
+
+    const handleDraftsClick = () => {
+        dispatch(fetchDraftList())
+        navigate(`/draft-list`)}
 
 
     return (
@@ -77,7 +87,7 @@ export const Header = () => {
                     >
                         <MenuItem onClick={handleClose}>View Profile</MenuItem>
                         <MenuItem onClick={handleEditProfileClick}>Edit Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>Drafts</MenuItem>
+                        <MenuItem onClick={handleDraftsClick}>Drafts</MenuItem>
                         <MenuItem onClick={handleClose}>Published</MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
