@@ -1,8 +1,8 @@
 import {fetchBlogDetail} from "../features/blogs/blogsThunks.jsx";
 import {Button, ImageListItem, Typography} from "@mui/material";
-import React from "react";
 import {imageListStyle, summaryButton, summaryDateAuthor, summaryText, summaryTitle} from "../emoticonCss.jsx";
 
+// eslint-disable-next-line react/prop-types
 export const BlogSummaryView = ({id,title,author,date,summary,headerUrl,dispatch,navigate}) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     const newDate = new Date(date);

@@ -2,31 +2,26 @@ import * as React from 'react';
 import {
     Alert, AlertTitle, Avatar,
     Box, Button,
-    Container, createTheme,
-    TextField,
+    Container, TextField,
     Typography
 } from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
 import {clearError, clearMessage} from "../features/users/usersSlice.jsx";
 import {selectUser} from "../features/users/usersSelectors.jsx"
 import {updateUser} from "../features/users/usersThunks.jsx"
 import {Header} from "../components/Header.jsx";
-import {useEffect} from "react";
 import {useEditProfileInitialValues} from "../app/useInitialValues.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
 
 export const EditProfile = () => {
 
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     //redux state
-    const {user, error, message}= useSelector(selectUser)
+    const { error, message}= useSelector(selectUser)
 
 
     //local states
-    const [success, setSuccess] = React.useState(false);
     const [selectedFile, setSelectedFile] = React.useState(null);
     const [formValues, setFormValues] = React.useState(useEditProfileInitialValues());
 
@@ -114,7 +109,6 @@ export const EditProfile = () => {
                 }
             }
             dispatch(updateUser(userUpdates))
-            setSuccess(true)
         }
         else
         {
@@ -141,7 +135,7 @@ export const EditProfile = () => {
 
                         <form noValidate onSubmit={handleSubmit}>
 
-                            <div style={{display:"flex", alignContent: "center", justifyContent: "center"}}>
+                            <div className='centerFlexDiv'>
                                 <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>
                                 <label htmlFor="fileInput">
                                     <Button
@@ -152,7 +146,7 @@ export const EditProfile = () => {
                                         >Upload New Picture</Button>
                                 </label>
                             </div>
-                            <div style={{display:"flex", alignContent: "center", justifyContent: "center", marginBottom:3}}>
+                            <div className='centerFlexDiv' style={{marginBottom:3}}>
                                 {selectedFile?
                                     <p>Selected File: {selectedFile.name}</p>: <p></p>}
                             </div>

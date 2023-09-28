@@ -1,7 +1,5 @@
 import {useSelector} from "react-redux";
 import {selectUser} from "../features/users/usersSelectors.jsx";
-import {selectExpandedBlog} from "../features/blogs/blogsSelector.jsx";
-import {fetchBlogDetail} from "../features/blogs/blogsThunks.jsx";
 
 
 export const useEditProfileInitialValues = () => {
@@ -57,4 +55,54 @@ export const useCreateDraftInitialValues = () => {
                 errorMessage: 'You must enter content',
             },
         })
+}
+
+export const useSignupInitialValues = () => {
+    return {
+        firstName: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a first name',
+        },
+        lastName: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a last name',
+        },
+        email: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a valid email address',
+        },
+        password1: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a password',
+        },
+        password2: {
+            value: '',
+            error: false,
+            errorMessage: 'Passwords do not match',
+        },
+        userBio: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter your user bio',
+        },
+    }
+}
+
+export const useLoginInitialValues = () =>{
+    return {
+        email: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a valid email address',
+        },
+        password: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a password',
+        },
+    }
 }

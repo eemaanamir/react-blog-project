@@ -3,23 +3,31 @@ import {
     draftEditButton,
     draftImageListStyle,
     draftSummaryTitle,
-    imageListStyle,
     summaryDateAuthor,
     summaryText
 } from "../emoticonCss.jsx";
-import React from "react";
 import {fetchBlogDetail} from "../features/blogs/blogsThunks.jsx";
 import {clearExpandedBlog} from "../features/blogs/blogsSlice.jsx";
+import {DRAFT, PUBLISHED} from "../app/constants.jsx";
 
-export const DraftSummaryView = ({id,title,date,summary,headerUrl,dispatch,navigate}) => {
+
+// eslint-disable-next-line react/prop-types
+export const DraftSummaryView = ({id,title,date,summary,headerUrl,dispatch,navigate, type}) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     const newDate = new Date(date);
     const formattedDate = newDate.toLocaleDateString('en-US', options);
 
     const handleClick = () => {
-        dispatch(clearExpandedBlog())
-        dispatch(fetchBlogDetail(id))
-        navigate(`/draft-edit`)
+        if (type===DRAFT) {
+            dispatch(clearExpandedBlog())
+            dispatch(fetchBlogDetail(id))
+            navigate(`/draft-edit`)
+        }
+        else if (type===PUBLISHED){
+            dispatch(clearExpandedBlog())
+            dispatch(fetchBlogDetail(id))
+            navigate(`/published-edit`)
+        }
     }
 
     return (

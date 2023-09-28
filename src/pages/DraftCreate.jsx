@@ -16,6 +16,7 @@ import {selectDraftError, selectDraftMessage} from "../features/blogs/blogsSelec
 import {createDraftBlog, fetchBlogs, fetchDraftList} from "../features/blogs/blogsThunks.jsx";
 import {clearDraftError,} from "../features/blogs/blogsSlice.jsx";
 import {TopicSelector} from "../components/TopicSelector.jsx";
+import {DRAFT, PUBLISHED} from "../app/constants.jsx";
 
 
 export const DraftCreate = () => {
@@ -34,12 +35,12 @@ export const DraftCreate = () => {
     const [isPublished, setIsPublished] = React.useState(false);
 
     useEffect(()=>{
-        if (message === 'Draft'){
+        if (message === DRAFT){
             dispatch(clearDraftError())
             dispatch(fetchDraftList())
             navigate(`/draft-list`)
         }
-        if (message === 'Published'){
+        else if (message === PUBLISHED){
             dispatch(clearDraftError())
             dispatch(fetchBlogs())
             navigate(`/`)
@@ -136,7 +137,7 @@ export const DraftCreate = () => {
         }
         if (isSuccess)
         {
-            const blogDeatils = {
+            const blogDetails = {
                 blog_title: formValues.blog_title.value,
                 blog_type: 'basic',
                 blog_topic: formValues.blog_topic.value,
@@ -144,7 +145,7 @@ export const DraftCreate = () => {
                 blog_content: formValues.blog_content.value,
                 is_published: isPublished
             }
-            dispatch(createDraftBlog(blogDeatils))
+            dispatch(createDraftBlog(blogDetails))
         }
         else
         {
@@ -169,7 +170,7 @@ export const DraftCreate = () => {
 
                         <form noValidate onSubmit={handleSubmit}>
 
-                            <div style={{display:"flex", alignContent: "center", justifyContent: "center"}}>
+                            <div className='centerFlexDiv'>
                                 <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>
                                 <label htmlFor="fileInput">
                                     <Button
@@ -180,7 +181,7 @@ export const DraftCreate = () => {
                                     >Upload Header Image</Button>
                                 </label>
                             </div>
-                            <div style={{display:"flex", alignContent: "center", justifyContent: "center", marginBottom:3}}>
+                            <div className='centerFlexDiv' style={{marginBottom:3}}>
                                 {selectedFile?
                                     <p>Selected File: {selectedFile.name}</p>: <p></p>}
                             </div>

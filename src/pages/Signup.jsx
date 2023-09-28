@@ -16,9 +16,9 @@ import {useNavigate} from "react-router-dom";
 import {clearError, clearMessage,} from "../features/users/usersSlice.jsx"
 import {selectUser} from "../features/users/usersSelectors.jsx"
 import {signupUser} from "../features/users/usersThunks.jsx"
-import {useEffect} from "react";
-import {validateField} from "../app/functions.jsx";
+import {toggleTheme, validateField} from "../app/functions.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
+import {useSignupInitialValues} from "../app/useInitialValues.jsx";
 
 
 export const Signup = () => {
@@ -27,13 +27,12 @@ export const Signup = () => {
     const navigate = useNavigate()
 
     //redux state
-    const {message, error}= useSelector(selectUser)
+    const {error}= useSelector(selectUser)
 
 
     //local states
     const [success, setSuccess] = React.useState(false);
-    const [background, setBackground] = React.useState('#132838');
-    const [formValues, setFormValues] = React.useState(initialFormState);
+    const [formValues, setFormValues] = React.useState(useSignupInitialValues());
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
@@ -74,17 +73,6 @@ export const Signup = () => {
         }
     }
 
-    const toggleTheme = () => {
-        document.bgColor = background;
-        if( background === "#132838") {
-            setBackground("#fff")
-        }
-        else{
-            setBackground("#132838")
-        }
-    }
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -113,7 +101,7 @@ export const Signup = () => {
             }
             dispatch(signupUser(userDetails)).then((result) => {
                 if (result.payload) {
-                    setFormValues(initialFormState)
+                    setFormValues(useSignupInitialValues())
                     setSuccess(true)
                     navigate(`/login`)
                 }
@@ -274,37 +262,4 @@ export const Signup = () => {
             </Container>
         </>
     );
-}
-
-const initialFormState = {
-    firstName: {
-        value: '',
-        error: false,
-        errorMessage: 'You must enter a first name',
-    },
-    lastName: {
-        value: '',
-        error: false,
-        errorMessage: 'You must enter a last name',
-    },
-    email: {
-        value: '',
-        error: false,
-        errorMessage: 'You must enter a valid email address',
-    },
-    password1: {
-        value: '',
-        error: false,
-        errorMessage: 'You must enter a password',
-    },
-    password2: {
-        value: '',
-        error: false,
-        errorMessage: 'Passwords do not match',
-    },
-    userBio: {
-        value: '',
-        error: false,
-        errorMessage: 'You must enter your user bio',
-    },
 }

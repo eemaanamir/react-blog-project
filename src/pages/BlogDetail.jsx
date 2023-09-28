@@ -4,7 +4,6 @@ import {
     Typography
 } from "@mui/material"
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
 import {selectExpandedBlog, selectExpandedBlogError} from "../features/blogs/blogsSelector.jsx";
 import {Header} from "../components/Header.jsx";
 import {
@@ -24,8 +23,9 @@ export const BlogDetail = () => {
     //local states
     const [content, setContent] = React.useState(null);
 
-    let newContent;
+
     useEffect(()=>{
+        let newContent;
         if(blogError){
             newContent = <p>{blogError}</p>
             setContent(newContent)

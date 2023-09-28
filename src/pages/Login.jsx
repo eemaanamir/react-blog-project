@@ -17,8 +17,9 @@ import {selectUser} from "../features/users/usersSelectors.jsx"
 import {loginUser,} from "../features/users/usersThunks.jsx"
 import {useNavigate} from "react-router-dom";
 import {LOGOUT_SUCCESSFUL, SIGNUP_SUCCESSFUL} from "../app/constants.jsx";
-import {validateField} from "../app/functions.jsx";
+import {toggleTheme, validateField} from "../app/functions.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
+import {useLoginInitialValues} from "../app/useInitialValues.jsx";
 
 
 export const Login = () => {
@@ -30,19 +31,7 @@ export const Login = () => {
     const {message, error}= useSelector(selectUser)
 
     //local states
-    const [background, setBackground] = React.useState('#132838');
-    const [formValues, setFormValues] = React.useState({
-        email: {
-            value: '',
-            error: false,
-            errorMessage: 'You must enter a valid email address',
-        },
-        password: {
-            value: '',
-            error: false,
-            errorMessage: 'You must enter a password',
-        },
-    });
+    const [formValues, setFormValues] = React.useState(useLoginInitialValues());
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
@@ -89,17 +78,6 @@ export const Login = () => {
             )
         }
     }
-
-    const toggleTheme = () => {
-        document.bgColor = background;
-        if( background === "#132838") {
-            setBackground("#fff")
-        }
-        else{
-            setBackground("#132838")
-        }
-    }
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,6 +1,13 @@
 import { createSlice,} from "@reduxjs/toolkit";
-import {fetchBlogDetail, fetchBlogs, createDraftBlog, fetchDraftList, updateDraftBlog} from "./blogsThunks.jsx";
-import {RequestStatus} from "../../app/constants.jsx";
+import {
+    fetchBlogDetail,
+    fetchBlogs,
+    createDraftBlog,
+    fetchDraftList,
+    updateDraftBlog,
+    fetchPublishedList
+} from "./blogsThunks.jsx";
+import {DRAFT, PUBLISHED, RequestStatus} from "../../app/constants.jsx";
 
 
 const initialState = {
@@ -13,6 +20,9 @@ const initialState = {
     draftsStatus: RequestStatus.IDLE,
     message: null,
     draftsError:null,
+    published: [],
+    publishedStatus: RequestStatus.IDLE,
+    publishedError: null,
 }
 
 const blogsSlice = createSlice({
@@ -62,7 +72,7 @@ const blogsSlice = createSlice({
                 state.expandedBlogError = action.error.message
             })
             .addCase(createDraftBlog.fulfilled, (state, action)=> {
-                state.message = action.payload.is_published? 'Published': 'Draft'
+                state.message = action.payload.is_published? PUBLISHED: DRAFT
                 state.draftError = null
             })
             .addCase(createDraftBlog.rejected,(state,action) =>{
@@ -81,12 +91,24 @@ const blogsSlice = createSlice({
                 state.draftsStatus = RequestStatus.FAILED
             })
             .addCase(updateDraftBlog.fulfilled,(state,action) =>{
-                state.message = action.payload.is_published? 'Published': 'Draft'
+                state.message = action.payload.is_published? PUBLISHED: DRAFT
                 state.draftError = null
                 state.expandedBlog = action.payload
             })
             .addCase(updateDraftBlog.rejected,(state,action) =>{
                 state.draftsError = action.error.message
+            })
+            .addCase(fetchPublishedList.pending, (state)=>{
+                state.publishedStatus = RequestStatus.LOADING
+            })
+            .addCase(fetchPublishedList.fulfilled, (state,action)=>{
+                state.published = action.payload
+                state.publishedError = null
+                state.publishedStatus = RequestStatus.SUCCEEDED
+            })
+            .addCase(fetchPublishedList.rejected, (state,action)=>{
+                state.publishedError= action.error.message
+                state.publishedStatus = RequestStatus.FAILED
             })
     }
 })

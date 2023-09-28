@@ -28,7 +28,7 @@ import {TopicSelector} from "../components/TopicSelector.jsx";
 import {DRAFT, PUBLISHED} from "../app/constants.jsx";
 
 
-export const DraftEdit = () => {
+export const PublishedEdit = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -36,47 +36,42 @@ export const DraftEdit = () => {
     //redux state
     const message = useSelector(selectDraftMessage)
     const error = useSelector(selectDraftError)
-    const selectedDraft = useSelector(selectExpandedBlog)
+    const selectedPublished = useSelector(selectExpandedBlog)
 
 
     //local states
     const [selectedFile, setSelectedFile] = React.useState(null);
     const [formValues, setFormValues] = React.useState(useCreateDraftInitialValues());
-    const [isPublished, setIsPublished] = React.useState(false);
+    const [isPublished, setIsPublished] = React.useState(true);
 
 
     useEffect(()=>{
-        if (selectedDraft){
+        if (selectedPublished){
             let newValues = {
                 blog_title: {
-                    value: selectedDraft.blog_title,
+                    value: selectedPublished.blog_title,
                     error: false,
                     errorMessage: 'You must enter a title',
                 },
                 blog_topic: {
-                    value: selectedDraft.blog_topic,
+                    value: selectedPublished.blog_topic,
                     error: false,
                     errorMessage: 'You must select a topic',
                 },
                 blog_summary: {
-                    value: selectedDraft.blog_summary,
+                    value: selectedPublished.blog_summary,
                     error: false,
                     errorMessage: 'You must enter a summary',
                 },
                 blog_content: {
-                    value: selectedDraft.blog_content,
+                    value: selectedPublished.blog_content,
                     error: false,
                     errorMessage: 'You must enter content',
                 },
             }
             setFormValues(newValues)
         }
-        if (message === PUBLISHED){
-            dispatch(clearDraftError())
-            dispatch(fetchBlogs())
-            navigate(`/`)
-        }
-    },[dispatch, message, navigate, selectedDraft])
+    },[dispatch, message, navigate, selectedPublished])
 
     const handleTopicChange = (e) => {
         const value = e.target.value;
@@ -114,11 +109,11 @@ export const DraftEdit = () => {
     const handleMessageClose = () => {dispatch(clearBlogMessage())}
     const handleErrorClose = () => {dispatch(clearDraftError())}
     const getAlertMessage = () => {
-        if (message === DRAFT){
+        if (message === PUBLISHED){
             return (
                 <Alert severity="success" onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
-                    Your {message} was successfully updated— <strong>Check it out!</strong>
+                    Your {message} Blog was successfully updated— <strong>Check it out!</strong>
                 </Alert>
             )
         }
@@ -183,7 +178,7 @@ export const DraftEdit = () => {
                 blog_summary: formValues.blog_summary.value,
                 blog_content: formValues.blog_content.value,
                 is_published: isPublished,
-                id:selectedDraft.id
+                id:selectedPublished.id
             }
             dispatch(updateDraftBlog(blogDetails))
         }
@@ -203,7 +198,7 @@ export const DraftEdit = () => {
                 <Box sx = {formBorderBox}>
                     <Box sx={formHeaderBox}>
                         <Typography variant="h5" component="h5" sx={{color: "#fff"}}>
-                            UPDATE DRAFT
+                            UPDATE BLOG
                         </Typography>
                     </Box>
                     <Box sx={formInnerBox}>
@@ -242,7 +237,7 @@ export const DraftEdit = () => {
                             <div style={{display:'flex', flexDirection:'row', marginBottom:2}}>
                                 <TopicSelector selectedTopic={formValues.blog_topic.value} handleTopicChange={handleTopicChange} errorValue={formValues.blog_topic.error} errorMessage={formValues.blog_topic.errorMessage}/>
 
-                                <FormControlLabel control={<Switch checked ={isPublished} onChange={handleSwitchChange} />} label="Published" sx={{pl:5, pt:1,}}/>
+                                <FormControlLabel control={<Switch checked ={isPublished} onChange={handleSwitchChange} disabled/>} label="Published" sx={{pl:5, pt:1,}}/>
                             </div>
 
                             <TextField

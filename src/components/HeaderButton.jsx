@@ -1,7 +1,7 @@
 import {Button} from "@mui/material";
-import React from "react";
 import {menuButton} from "../emoticonCss.jsx";
 
+// eslint-disable-next-line react/prop-types
 export const HeaderButton = ({text, callBack}) => {
     return (
         <Button variant="text"

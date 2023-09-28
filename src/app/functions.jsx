@@ -46,3 +46,13 @@ export const validateField = (formValues,name, value) => {
         }
     });
 };
+
+export const toggleTheme = () => {
+    let background = document.bgColor
+    if( background === "#132838") {
+        document.bgColor = "#fff"
+    }
+    else{
+        document.bgColor = "#132838"
+    }
+}

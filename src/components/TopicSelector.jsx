@@ -1,5 +1,6 @@
 import {FormControl, MenuItem, Select, Typography} from "@mui/material";
 
+// eslint-disable-next-line react/prop-types
 export const TopicSelector = ({ selectedTopic, handleTopicChange, errorValue, errorMessage }) => {
     const topics = [
         'Select Topic *',

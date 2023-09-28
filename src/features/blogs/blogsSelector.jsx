@@ -13,3 +13,9 @@ export const selectDraftError = (state) => state.blogs.draftsError
 export const selectDraftStatus = (state) => state.blogs.draftsStatus
 
 export const selectAllDrafts = (state) => state.blogs.drafts
+
+export const selectPublishedError = (state) => state.blogs.publishedError
+
+export const selectPublishedStatus = (state) => state.blogs.publishedStatus
+
+export const selectAllPublished = (state) => state.blogs.published

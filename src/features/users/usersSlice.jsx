@@ -1,5 +1,6 @@
 import { createSlice,} from "@reduxjs/toolkit";
 import {loginUser, signupUser, updateUser} from "./usersThunks.jsx";
+import Cookies from 'js-cookie';
 
 
 const userSlice = createSlice({
@@ -19,7 +20,8 @@ const userSlice = createSlice({
         },
         logout:(state) =>{
             localStorage.removeItem("user")
-            localStorage.removeItem("token")
+            Cookies.remove("token");
+            // localStorage.removeItem("token")
             localStorage.removeItem("userID")
             state.loading=false
             state.user=null
@@ -37,7 +39,8 @@ const userSlice = createSlice({
                 };
             })
             .addCase(loginUser.fulfilled, (state, action)=>{
-                localStorage.setItem("token", action.payload["token"])
+                Cookies.set("token", action.payload["token"], {expires: 7,})
+                // localStorage.setItem("token", action.payload["token"])
                 localStorage.setItem("userID", action.payload.user.id)
                 return {
                     ...state,

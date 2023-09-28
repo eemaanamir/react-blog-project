@@ -3,19 +3,15 @@ import {
     Alert, AlertTitle,
     Box,
     Button,
-    ImageList, ImageListItem,
+    ImageList,
     Typography
 } from "@mui/material"
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {
-    selectAllBlogs,
-    selectBlogsStatus,
-    selectBlogsError, selectDraftMessage, selectAllDrafts, selectDraftStatus,
-} from "../features/blogs/blogsSelector.jsx";
-import {fetchBlogDetail, fetchBlogs, fetchDraftList} from "../features/blogs/blogsThunks.jsx"
+import {selectDraftMessage, selectAllDrafts, selectDraftStatus,} from "../features/blogs/blogsSelector.jsx";
+import {fetchDraftList} from "../features/blogs/blogsThunks.jsx"
 import {Header} from "../components/Header.jsx";
-import {RequestStatus} from "../app/constants.jsx";
+import {DRAFT, RequestStatus} from "../app/constants.jsx";
 import {
     draftEditButton,
     topographyMainHeading
@@ -37,9 +33,9 @@ export const DraftsList = () => {
     //local states
     const [content, setContent] = React.useState(null);
 
-    let newContent;
 
     useEffect(()=>{
+        let newContent;
         if (draftsStatus === RequestStatus.IDLE){
             dispatch(fetchDraftList())
         }
@@ -63,6 +59,7 @@ export const DraftsList = () => {
                 headerUrl={blog.blog_header_image}
                 dispatch={dispatch}
                 navigate={navigate}
+                type = {DRAFT}
             />)
             setContent(newContent)
         }

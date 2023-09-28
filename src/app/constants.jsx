@@ -5,6 +5,9 @@ export const RequestStatus = {
     FAILED: 'failed'
 };
 
+export const PUBLISHED = 'Published'
+export const DRAFT = 'Draft'
+
 export const SIGNUP_SUCCESSFUL = "Signup Successful"
 export const LOGOUT_SUCCESSFUL = "Logout Successful"
 
@@ -16,3 +19,5 @@ export const BLOG_LIST_URL = `${BASE_URL}/blogs/list/`;
 export const CREATE_DRAFT_URL = `${BASE_URL}/blogs/create/`
 
 export const DRAFT_LIST_URL = `${BASE_URL}/blogs/drafts/`
+
+export const PUBLISHED_LIST_URL = `${BASE_URL}/blogs/published/`

@@ -85,3 +85,10 @@ body {
     font-weight:450;
     padding-right: .5rem;
 }
+
+
+.centerFlexDiv{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
