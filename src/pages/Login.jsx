@@ -16,7 +16,7 @@ import {clearMessage, clearError} from "../features/users/usersSlice.jsx";
 import {selectUser} from "../features/users/usersSelectors.jsx"
 import {loginUser,} from "../features/users/usersThunks.jsx"
 import {useNavigate} from "react-router-dom";
-import {LOGOUT_SUCCESSFUL, SIGNUP_SUCCESSFUL} from "../app/constants.jsx";
+import {LOGOUT_SUCCESSFUL, VERIFICATION_SUCCESSFUL} from "../app/constants.jsx";
 import {toggleTheme, validateField} from "../app/functions.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
 import {useLoginInitialValues} from "../app/useInitialValues.jsx";
@@ -53,11 +53,11 @@ export const Login = () => {
     const handleMessageClose = () => {dispatch(clearMessage())}
     const handleErrorClose = () => {dispatch(clearError())}
     const getAlertMessage = () => {
-        if (message=== SIGNUP_SUCCESSFUL){
+        if (message=== VERIFICATION_SUCCESSFUL){
             return(
                 <Alert severity="success"  onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
-                    You account was successfully created — <strong>Login to continue!</strong>
+                    You email was successfully verified — <strong>Login to continue!</strong>
                 </Alert>
             )
         }
@@ -103,18 +103,9 @@ export const Login = () => {
             }
             dispatch(loginUser(userCredentials)).then((result) => {
                 if (result.payload) {
-                    setFormValues({
-                        email: {
-                            value: '',
-                            error: false,
-                            errorMessage: 'You must enter a valid email address',
-                        },
-                        password: {
-                            value: '',
-                            error: false,
-                            errorMessage: 'You must enter a password',
-                        }
-                    })
+                    setFormValues(useLoginInitialValues())
+                    dispatch(clearMessage())
+                    dispatch(clearError())
                     navigate(`/`)
                 }
             })

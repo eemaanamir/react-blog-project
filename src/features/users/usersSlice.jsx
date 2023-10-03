@@ -1,5 +1,5 @@
 import { createSlice,} from "@reduxjs/toolkit";
-import {loginUser, signupUser, updateUser} from "./usersThunks.jsx";
+import {loginUser, signupUser, updateUser, verifyUser} from "./usersThunks.jsx";
 import Cookies from 'js-cookie';
 
 
@@ -60,9 +60,10 @@ const userSlice = createSlice({
                             : (state.error = action.error.message),
                 };
             })
-            .addCase(signupUser.fulfilled, (state)=>{
+            .addCase(signupUser.fulfilled, (state, action)=>{
                 return {
                     ...state,
+                    user: action.payload,
                     message: "Signup Successful",
                     error: null
                 };
@@ -76,6 +77,21 @@ const userSlice = createSlice({
                         action.error.message === 'Request failed with status code 400'
                             ? 'This email is already in use. Please use a different email.'
                             : (state.error = action.error.message),
+                };
+            })
+            .addCase(verifyUser.fulfilled, (state, action)=>{
+                return {
+                    ...state,
+                    message: "Verification Successful",
+                    error: null
+                };
+            })
+            .addCase(verifyUser.rejected, (state, action)=>{
+                return {
+                    ...state,
+                    loading: false,
+                    user: null,
+                    error: action.error.message,
                 };
             })
             .addCase(updateUser.fulfilled, (state,action) =>{

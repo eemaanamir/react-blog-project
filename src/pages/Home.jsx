@@ -17,6 +17,7 @@ import {RequestStatus} from "../app/constants.jsx";
 import {BlogSummaryView} from "../components/BlogSummaryView.jsx";
 import {topographyMainHeading} from "../emoticonCss.jsx";
 import {clearBlogMessage} from "../features/blogs/blogsSlice.jsx";
+import {Footer} from "../components/Footer.jsx";
 
 
 export const Home = () => {
@@ -90,6 +91,7 @@ export const Home = () => {
                     {content}
                 </ImageList>
             </div>
+            <Footer/>
         </>
     )
 }

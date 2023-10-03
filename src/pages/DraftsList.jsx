@@ -18,6 +18,7 @@ import {
 } from "../emoticonCss.jsx";
 import {DraftSummaryView} from "../components/DraftSummaryView.jsx";
 import {clearBlogMessage} from "../features/blogs/blogsSlice.jsx";
+import {Footer} from "../components/Footer.jsx";
 
 
 export const DraftsList = () => {
@@ -105,6 +106,7 @@ export const DraftsList = () => {
                     {content}
                 </ImageList>
             </div>
+            <Footer/>
         </>
     )
 }

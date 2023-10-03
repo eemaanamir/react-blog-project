@@ -18,7 +18,7 @@ import {selectUser} from "../features/users/usersSelectors.jsx"
 import {signupUser} from "../features/users/usersThunks.jsx"
 import {toggleTheme, validateField} from "../app/functions.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
-import {useSignupInitialValues} from "../app/useInitialValues.jsx";
+import {getSignupInitialValues,} from "../app/useInitialValues.jsx";
 
 
 export const Signup = () => {
@@ -32,7 +32,7 @@ export const Signup = () => {
 
     //local states
     const [success, setSuccess] = React.useState(false);
-    const [formValues, setFormValues] = React.useState(useSignupInitialValues());
+    const [formValues, setFormValues] = React.useState(getSignupInitialValues());
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
@@ -101,9 +101,10 @@ export const Signup = () => {
             }
             dispatch(signupUser(userDetails)).then((result) => {
                 if (result.payload) {
-                    setFormValues(useSignupInitialValues())
+                    setFormValues(getSignupInitialValues())
                     setSuccess(true)
-                    navigate(`/login`)
+                    dispatch(clearError())
+                    navigate(`/verify-email`)
                 }
             })
         }

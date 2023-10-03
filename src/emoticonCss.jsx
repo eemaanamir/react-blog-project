@@ -92,6 +92,11 @@ export const formContainer = css`
   margin-top: 5em;
 `;
 
+export const blogFormContainer = css`
+  width:160ch;
+  margin-top: 5em;
+`;
+
 export const formBorderBox = css`
   border: 3px solid #214252;
   margin-top: 5px;
@@ -183,3 +188,14 @@ export const blogDetailContent = css`
   padding-bottom:1.3rem;
   max-width: 1100px;
 `;
+
+
+export const blogyFooterText = css`
+    font-family: "Work Sans", sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 200;
+    margin-top: 1.35rem;
+    justify-self: center;
+`;
+

@@ -32,7 +32,7 @@ export const TopicSelector = ({ selectedTopic, handleTopicChange, errorValue, er
                 id="topic-select"
                 value={selectedTopic}
                 onChange={handleTopicChange}
-                sx={{width:'23rem', color: errorValue?'#d32f2f':'gray'}}
+                sx={{width:'100ch', color: errorValue?'#d32f2f':'gray'}}
             >
                 {topics.map((topic) => (
                     <MenuItem key={topic} value={topic}>

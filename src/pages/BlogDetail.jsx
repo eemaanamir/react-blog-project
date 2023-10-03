@@ -12,6 +12,7 @@ import {
     blogDetailHeaderTopic,
     userAvatar
 } from "../emoticonCss.jsx";
+import {Footer} from "../components/Footer.jsx";
 
 
 export const BlogDetail = () => {
@@ -67,7 +68,7 @@ export const BlogDetail = () => {
                     </ImageListItem>
                     <div className='blogDetailContentDiv'>
                         <Typography variant="h3" color="inherit" sx={blogDetailContent}>
-                            {blog.blog_content}
+                            <div dangerouslySetInnerHTML={{ __html: blog.blog_content }} />
                         </Typography>
                         <Typography variant="h3" color="inherit" sx={blogDetailContent}>
                             Category: <span className='blogDetailCategorySpan'>{blog.blog_topic}</span>
@@ -89,6 +90,7 @@ export const BlogDetail = () => {
         <>
             <Header/>
             {content}
+            <Footer/>
         </>
     )
 }

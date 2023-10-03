@@ -41,6 +41,13 @@ export const validateField = (formValues,name, value) => {
                     resolve();
                 }
                 break;
+            case 'otp':
+                if (!value.match(/^\d{6}$/gm)){
+                    reject(formValues[name].errorMessage);
+                } else {
+                    resolve();
+                }
+                break;
             default:
                 resolve();
         }

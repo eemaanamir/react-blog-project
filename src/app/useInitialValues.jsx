@@ -57,7 +57,7 @@ export const useCreateDraftInitialValues = () => {
         })
 }
 
-export const useSignupInitialValues = () => {
+export const getSignupInitialValues = () => {
     return {
         firstName: {
             value: '',
@@ -103,6 +103,16 @@ export const useLoginInitialValues = () =>{
             value: '',
             error: false,
             errorMessage: 'You must enter a password',
+        },
+    }
+}
+
+export const useVerifyEmailInitialValues = () =>{
+    return {
+        otp: {
+            value: '',
+            error: false,
+            errorMessage: 'You must enter a 6 digit OTP',
         },
     }
 }

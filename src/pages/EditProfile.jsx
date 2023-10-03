@@ -12,6 +12,7 @@ import {updateUser} from "../features/users/usersThunks.jsx"
 import {Header} from "../components/Header.jsx";
 import {useEditProfileInitialValues} from "../app/useInitialValues.jsx";
 import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
+import {Footer} from "../components/Footer.jsx";
 
 export const EditProfile = () => {
 
@@ -216,6 +217,7 @@ export const EditProfile = () => {
                     </Box>
                 </Box>
             </Container>
+            <Footer/>
         </>
     );
 }

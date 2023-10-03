@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
-import {BASE_URL, USER_LOGIN_URL, USER_SIGNUP_URL} from "../../app/constants.jsx";
+import {BASE_URL, EMAIL_VERIFICATION_URL, USER_LOGIN_URL, USER_SIGNUP_URL} from "../../app/constants.jsx";
 import Cookies from 'js-cookie';
 
 
@@ -9,6 +9,14 @@ export const loginUser = createAsyncThunk(
     async (userCredentials) => {
         const response = await axios.post(USER_LOGIN_URL, userCredentials)
         localStorage.setItem('user', JSON.stringify(response.data.user))
+        return response.data
+    }
+)
+
+export const verifyUser = createAsyncThunk(
+    'user/verifyUser',
+    async (userCredentials) => {
+        const response = await axios.put(EMAIL_VERIFICATION_URL, userCredentials)
         return response.data
     }
 )

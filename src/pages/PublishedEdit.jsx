@@ -11,21 +11,29 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {Header} from "../components/Header.jsx";
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 import {useCreateDraftInitialValues, } from "../app/useInitialValues.jsx";
-import {formBorderBox, formContainer, formHeaderBox, formInnerBox, formSubmitButton} from "../emoticonCss.jsx";
+import {
+    blogFormContainer,
+    formBorderBox,
+    formHeaderBox,
+    formInnerBox,
+    formSubmitButton
+} from "../emoticonCss.jsx";
 import {
     selectDraftError,
     selectDraftMessage,
     selectExpandedBlog
 } from "../features/blogs/blogsSelector.jsx";
 import {
-    fetchBlogs,
     updateDraftBlog
 } from "../features/blogs/blogsThunks.jsx";
 import {clearBlogMessage, clearDraftError, } from "../features/blogs/blogsSlice.jsx";
 import {TopicSelector} from "../components/TopicSelector.jsx";
-import {DRAFT, PUBLISHED} from "../app/constants.jsx";
+import {PUBLISHED} from "../app/constants.jsx";
+import {Editor} from "@tinymce/tinymce-react";
+import {Footer} from "../components/Footer.jsx";
+import {mceInit} from "../mceInit.js";
 
 
 export const PublishedEdit = () => {
@@ -40,9 +48,9 @@ export const PublishedEdit = () => {
 
 
     //local states
-    const [selectedFile, setSelectedFile] = React.useState(null);
     const [formValues, setFormValues] = React.useState(useCreateDraftInitialValues());
     const [isPublished, setIsPublished] = React.useState(true);
+    const editorRef = useRef(null);
 
 
     useEffect(()=>{
@@ -96,6 +104,17 @@ export const PublishedEdit = () => {
             },
         });
     };
+    const handleEditorChange = ()=> {
+        const value = editorRef.current.getContent()
+        setFormValues({
+            ...formValues,
+            ['blog_content']:{
+                ...formValues['blog_content'],
+                value,
+                error: false
+            }
+        })
+    }
 
     const handleSwitchChange = (event) => {
         setIsPublished(event.target.checked); // Update the local state variable
@@ -192,7 +211,7 @@ export const PublishedEdit = () => {
     return (
         <>
             <Header/>
-            <Container sx={formContainer}>
+            <Container sx={blogFormContainer}>
                 {getAlertMessage()}
                 <br/>
                 <Box sx = {formBorderBox}>
@@ -205,22 +224,6 @@ export const PublishedEdit = () => {
 
                         <form noValidate onSubmit={handleSubmit}>
 
-                            <div className='centerFlexDiv'>
-                                <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>
-                                <label htmlFor="fileInput">
-                                    <Button
-                                        variant="contained"
-                                        color= 'primary'
-                                        component = "span"
-                                        disabled
-                                    >Upload Header Image</Button>
-                                </label>
-                            </div>
-                            <div className='centerFlexDiv'>
-                                {selectedFile?
-                                    <p>Selected File: {selectedFile.name}</p>: <p></p>}
-                            </div>
-
                             <TextField
                                 placeholder="Enter the title of your blog"
                                 label="Title"
@@ -232,7 +235,7 @@ export const PublishedEdit = () => {
                                 onChange={handleChange}
                                 error={formValues.blog_title.error}
                                 helperText={formValues.blog_title.error && formValues.blog_title.errorMessage}
-                                sx={{ my:1, width: '70ch',  mr:1 }}
+                                sx={{ my:1, width: '140ch',  mr:1 }}
                             />
                             <div style={{display:'flex', flexDirection:'row', marginBottom:2}}>
                                 <TopicSelector selectedTopic={formValues.blog_topic.value} handleTopicChange={handleTopicChange} errorValue={formValues.blog_topic.error} errorMessage={formValues.blog_topic.errorMessage}/>
@@ -253,23 +256,15 @@ export const PublishedEdit = () => {
                                 onChange={handleChange}
                                 error={formValues.blog_summary.error}
                                 helperText={formValues.blog_summary.error && formValues.blog_summary.errorMessage}
-                                sx={{ my:1, width: '70ch'}}
+                                sx={{ my:1, width: '140ch'}}
                             />
 
-                            <TextField
-                                placeholder="Add your blog content here"
-                                label="Content"
-                                name="blog_content"
-                                variant="outlined"
-                                fullWidth
-                                required
-                                multiline
-                                rows={4}
-                                value={formValues.blog_content.value}
-                                onChange={handleChange}
-                                error={formValues.blog_content.error}
-                                helperText={formValues.blog_content.error && formValues.blog_content.errorMessage}
-                                sx={{ my:1, width: '70ch'}}
+                            <Editor
+                                apiKey='4ybtlk063thc3m1hm42oavpu3sbewj6gnlfdjkdzr31qw1tc'
+                                onInit={(evt, editor) => editorRef.current = editor}
+                                initialValue={formValues.blog_content.value}
+                                init={mceInit}
+                                onEditorChange={handleEditorChange}
                             />
 
                             <Box sx={formSubmitButton}>
@@ -282,6 +277,7 @@ export const PublishedEdit = () => {
                     </Box>
                 </Box>
             </Container>
+            <Footer/>
         </>
     );
 }

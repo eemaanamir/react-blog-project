@@ -3,6 +3,7 @@ import {createTheme, ThemeProvider} from "@mui/material";
 
 
 import { Signup } from "./pages/Signup.jsx";
+import { EmailVerification} from "./pages/EmailVerification.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Home } from "./pages/Home.jsx"
 import { EditProfile } from "./pages/EditProfile.jsx"
@@ -30,6 +31,7 @@ export default function App(){
                 <Routes>
                     <Route path="/" element={<Home />}/>
                     <Route path="/sign-up" element={<Signup />}/>
+                    <Route path="/verify-email" element={<EmailVerification />}/>
                     <Route path="/login" element={<Login />}/>
                     <Route path="/edit-profile" element={<EditProfile/>}/>
                     <Route path="/blog-detail" element={<BlogDetail/>}/>
