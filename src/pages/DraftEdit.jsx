@@ -51,13 +51,13 @@ export const DraftEdit = () => {
 
 
     //local states
-    const [selectedFile, setSelectedFile] = React.useState(null);
+    const [draftInitialized, setDraftInitialized] = React.useState(false);
     const [formValues, setFormValues] = React.useState(useCreateDraftInitialValues());
     const [isPublished, setIsPublished] = React.useState(false);
     const editorRef = useRef(null);
 
     useEffect(()=>{
-        if (selectedDraft){
+        if (selectedDraft && !draftInitialized){
             let newValues = {
                 blog_title: {
                     value: selectedDraft.blog_title,
@@ -81,6 +81,7 @@ export const DraftEdit = () => {
                 },
             }
             setFormValues(newValues)
+            setDraftInitialized(true)
         }
         if (message === PUBLISHED){
             dispatch(clearDraftError())
@@ -123,15 +124,11 @@ export const DraftEdit = () => {
                 error: false
             }
         })
+        console.log(formValues['blog_content'].value)
     }
 
     const handleSwitchChange = (event) => {
         setIsPublished(event.target.checked); // Update the local state variable
-    };
-
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
     };
 
     const handleMessageClose = () => {dispatch(clearBlogMessage())}
@@ -183,7 +180,18 @@ export const DraftEdit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const value = editorRef.current.getContent()
+        setFormValues({
+            ...formValues,
+            ['blog_content']:{
+                ...formValues['blog_content'],
+                value,
+                error: false
+            }
+        })
+
         let newFormValues = {...formValues};
+        newFormValues.blog_content.value = value
 
         const fieldNames = Object.keys(formValues);
         let isSuccess = true;
@@ -270,10 +278,12 @@ export const DraftEdit = () => {
 
                             <Editor
                                 apiKey='4ybtlk063thc3m1hm42oavpu3sbewj6gnlfdjkdzr31qw1tc'
-                                onInit={(evt, editor) => editorRef.current = editor}
+                                onInit={(evt, editor) => {
+                                    editorRef.current = editor
+                                    editorRef.current.focus();
+                                }}
                                 initialValue={formValues.blog_content.value}
                                 init={mceInit}
-                                onEditorChange={handleEditorChange}
                             />
 
                             <Box sx={formSubmitButton}>

@@ -83,25 +83,8 @@ export const DraftCreate = () => {
         });
     };
 
-    const handleEditorChange = ()=> {
-        const value = editorRef.current.getContent()
-        setFormValues({
-            ...formValues,
-            ['blog_content']:{
-                ...formValues['blog_content'],
-                value,
-                error: false
-            }
-        })
-    }
-
     const handleSwitchChange = (event) => {
         setIsPublished(event.target.checked); // Update the local state variable
-    };
-
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
     };
 
     const handleErrorClose = () => {dispatch(clearDraftError())}
@@ -145,7 +128,18 @@ export const DraftCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const value = editorRef.current.getContent()
+        setFormValues({
+            ...formValues,
+            ['blog_content']:{
+                ...formValues['blog_content'],
+                value,
+                error: false
+            }
+        })
+
         let newFormValues = {...formValues};
+        newFormValues.blog_content.value = value
 
         const fieldNames = Object.keys(formValues);
         let isSuccess = true;
@@ -251,7 +245,6 @@ export const DraftCreate = () => {
                                 onInit={(evt, editor) => editorRef.current = editor}
                                 initialValue="<p>Add your blog content here.</p>"
                                 init={mceInit}
-                                onEditorChange={handleEditorChange}
                             />
 
                             <Box sx={formSubmitButton}>

@@ -48,13 +48,14 @@ export const PublishedEdit = () => {
 
 
     //local states
+    const [publishedInitialized, setPublishedInitialized] = React.useState(false);
     const [formValues, setFormValues] = React.useState(useCreateDraftInitialValues());
     const [isPublished, setIsPublished] = React.useState(true);
     const editorRef = useRef(null);
 
 
     useEffect(()=>{
-        if (selectedPublished){
+        if (selectedPublished && !publishedInitialized){
             let newValues = {
                 blog_title: {
                     value: selectedPublished.blog_title,
@@ -78,6 +79,7 @@ export const PublishedEdit = () => {
                 },
             }
             setFormValues(newValues)
+            setPublishedInitialized(true)
         }
     },[dispatch, message, navigate, selectedPublished])
 
@@ -104,25 +106,9 @@ export const PublishedEdit = () => {
             },
         });
     };
-    const handleEditorChange = ()=> {
-        const value = editorRef.current.getContent()
-        setFormValues({
-            ...formValues,
-            ['blog_content']:{
-                ...formValues['blog_content'],
-                value,
-                error: false
-            }
-        })
-    }
 
     const handleSwitchChange = (event) => {
         setIsPublished(event.target.checked); // Update the local state variable
-    };
-
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
     };
 
     const handleMessageClose = () => {dispatch(clearBlogMessage())}
@@ -174,7 +160,18 @@ export const PublishedEdit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const value = editorRef.current.getContent()
+        setFormValues({
+            ...formValues,
+            ['blog_content']:{
+                ...formValues['blog_content'],
+                value,
+                error: false
+            }
+        })
+
         let newFormValues = {...formValues};
+        newFormValues.blog_content.value = value
 
         const fieldNames = Object.keys(formValues);
         let isSuccess = true;
@@ -264,7 +261,6 @@ export const PublishedEdit = () => {
                                 onInit={(evt, editor) => editorRef.current = editor}
                                 initialValue={formValues.blog_content.value}
                                 init={mceInit}
-                                onEditorChange={handleEditorChange}
                             />
 
                             <Box sx={formSubmitButton}>
