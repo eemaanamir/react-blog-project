@@ -17,6 +17,7 @@ import {HeaderButton} from "./HeaderButton.jsx";
 import {appBar, blogyHeading, headerUserAvatar, menuButton,} from "../emoticonCss.jsx";
 import {resetBlogsSlice} from "../features/blogs/blogsSlice.jsx";
 import {fetchBlogs, fetchDraftList, fetchPublishedList} from "../features/blogs/blogsThunks.jsx";
+import {resetSubscriptionSlice} from "../features/subscriptions/subscriptionsSlice.jsx";
 
 
 export const Header = () => {
@@ -41,6 +42,8 @@ export const Header = () => {
 
     const handleLogout = () => {
         dispatch(resetBlogsSlice())
+        dispatch(resetBlogsSlice())
+        dispatch(resetSubscriptionSlice())
         dispatch(logout())
         navigate(`/login`)
     }

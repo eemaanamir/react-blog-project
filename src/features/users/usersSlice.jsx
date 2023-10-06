@@ -1,6 +1,7 @@
 import { createSlice,} from "@reduxjs/toolkit";
 import {loginUser, signupUser, updateUser, verifyUser} from "./usersThunks.jsx";
 import Cookies from 'js-cookie';
+import {PREMIUM} from "../../app/constants.jsx";
 
 
 const userSlice = createSlice({
@@ -21,13 +22,15 @@ const userSlice = createSlice({
         logout:(state) =>{
             localStorage.removeItem("user")
             Cookies.remove("token");
-            // localStorage.removeItem("token")
             localStorage.removeItem("userID")
             state.loading=false
             state.user=null
             state.error=null
             state.message='Logout Successful'
         },
+        updateToPremium: (state) => {
+            state.user.profile.user_type = PREMIUM
+        }
     },
     extraReducers:(builder) => {
         builder
@@ -79,7 +82,7 @@ const userSlice = createSlice({
                             : (state.error = action.error.message),
                 };
             })
-            .addCase(verifyUser.fulfilled, (state, action)=>{
+            .addCase(verifyUser.fulfilled, (state)=>{
                 return {
                     ...state,
                     message: "Verification Successful",
@@ -109,12 +112,12 @@ const userSlice = createSlice({
                     error: action.error.message
                 }
             })
-
     }
 });
 
 export const {clearMessage,
     clearError,
-    logout} = userSlice.actions
+    logout,
+    updateToPremium} = userSlice.actions
 export default userSlice.reducer;
 

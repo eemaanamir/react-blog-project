@@ -6,6 +6,7 @@ import {
 } from "@mui/material"
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
+
 import {
     selectAllBlogs,
     selectBlogsStatus,
@@ -13,11 +14,14 @@ import {
 } from "../features/blogs/blogsSelector.jsx";
 import {fetchBlogs} from "../features/blogs/blogsThunks.jsx"
 import {Header} from "../components/Header.jsx";
-import {RequestStatus} from "../app/constants.jsx";
+import {PAYMENT_CANCELLED, PAYMENT_SUCCESSFUL, RequestStatus} from "../app/constants.jsx";
 import {BlogSummaryView} from "../components/BlogSummaryView.jsx";
 import {topographyMainHeading} from "../emoticonCss.jsx";
 import {clearBlogMessage} from "../features/blogs/blogsSlice.jsx";
 import {Footer} from "../components/Footer.jsx";
+import {selectUser} from "../features/users/usersSelectors.jsx";
+import {selectSubscription} from "../features/subscriptions/subscriptionsSelector.jsx";
+import {clearSubscriptionMessage} from "../features/subscriptions/subscriptionsSlice.jsx";
 
 
 export const Home = () => {
@@ -29,6 +33,8 @@ export const Home = () => {
     const blogsStatus = useSelector(selectBlogsStatus)
     const blogsError = useSelector(selectBlogsError)
     const message = useSelector(selectDraftMessage)
+    const {user} = useSelector(selectUser)
+    const {stripeCheckoutUrl, subscriptionMessage} = useSelector(selectSubscription)
 
     //local states
     const [content, setContent] = React.useState(null);
@@ -38,7 +44,8 @@ export const Home = () => {
         if (blogsStatus === RequestStatus.IDLE){
             dispatch(fetchBlogs())
         }
-        if(blogsStatus === RequestStatus.LOADING){
+        else if(blogsStatus === RequestStatus.LOADING){
+            console.log(blogsStatus)
             newContent = <p>Loading...</p>
             setContent(newContent)
         }
@@ -56,6 +63,8 @@ export const Home = () => {
                 date={blog.blog_date_time}
                 summary={blog.blog_summary}
                 headerUrl={blog.blog_header_image}
+                blogType={blog.blog_type}
+                userType={user.profile.user_type}
                 dispatch={dispatch}
                 navigate={navigate}
             />)
@@ -65,15 +74,38 @@ export const Home = () => {
             newContent = <p>{blogsError}</p>
             setContent(newContent)
         }
-    },[blogsStatus,dispatch,blogsError,blogs,navigate])
+    },[blogsStatus,dispatch,blogsError,blogs,navigate,user])
+
+    useEffect(() => {
+        if (stripeCheckoutUrl) {
+            window.location.href = stripeCheckoutUrl;
+        }
+    }, [stripeCheckoutUrl]);
 
     const handleMessageClose = () => {dispatch(clearBlogMessage())}
+    const handleSubMessageClose = () => {dispatch((clearSubscriptionMessage()))}
     const getAlertMessage = () => {
         if (message){
             return(
                 <Alert severity="success" onClose={handleMessageClose}>
                     <AlertTitle>Success</AlertTitle>
                     Your Blog Was Successfully {message} — <strong>Check it out!</strong>
+                </Alert>
+            )
+        }
+        if (subscriptionMessage === PAYMENT_SUCCESSFUL){
+            return(
+                <Alert severity="success" onClose={handleSubMessageClose}>
+                    <AlertTitle>Success</AlertTitle>
+                    Your payment was successful. You are now a Premium user — <strong>Check it out!</strong>
+                </Alert>
+            )
+        }
+        else if (subscriptionMessage === PAYMENT_CANCELLED){
+            return (
+                <Alert severity="error" onClose={handleSubMessageClose}>
+                    <AlertTitle>Error</AlertTitle>
+                    An error occurred in your payment please try again— <strong>Try Again!</strong>
                 </Alert>
             )
         }

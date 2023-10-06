@@ -13,6 +13,8 @@ import {DraftCreate} from "./pages/DraftCreate.jsx";
 import {DraftEdit} from "./pages/DraftEdit.jsx";
 import {PublishedList} from "./pages/PublishedList.jsx";
 import {PublishedEdit} from "./pages/PublishedEdit.jsx";
+import {CheckoutSuccess} from "./pages/CheckoutSuccess.jsx";
+import {CheckoutCancelled} from "./pages/CheckoutCancelled.jsx";
 
 const theme = createTheme({
     palette: {
@@ -40,6 +42,8 @@ export default function App(){
                     <Route path="/draft-edit" element={<DraftEdit/>}/>
                     <Route path="/published-list" element={<PublishedList/>}/>
                     <Route path="/published-edit" element={<PublishedEdit/>}/>
+                    <Route path="/checkout-success" element={<CheckoutSuccess/>}/>
+                    <Route path="/checkout-cancelled" element={<CheckoutCancelled/>}/>
                 </Routes>
             </Router>
         </div>

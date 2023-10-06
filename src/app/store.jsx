@@ -4,6 +4,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 
 import usersReducer from '../features/users/usersSlice.jsx';
 import blogsReducer from '../features/blogs/blogsSlice.jsx'
+import subscriptionsReducer from '../features/subscriptions/subscriptionsSlice.jsx'
 
 const persistConfig = {
     key: 'root',
@@ -16,6 +17,7 @@ export const store = configureStore({
     reducer: {
         users: persistedUsersReducer,
         blogs: persistedBlogsReducer,
+        subscriptions:  subscriptionsReducer
     }
 })
 

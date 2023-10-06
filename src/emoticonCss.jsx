@@ -39,6 +39,19 @@ export const summaryButton = css`
   left: 10px;
 `;
 
+export const summaryPremiumButton = css`
+  color: #a47f05;
+  font-family: "Work Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: none;
+  width: fit-content;
+  padding: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+`;
+
 export const imageListStyle = css`
   width: 416px;
   border-radius: 2px;

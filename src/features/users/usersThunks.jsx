@@ -1,6 +1,12 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
-import {BASE_URL, EMAIL_VERIFICATION_URL, USER_LOGIN_URL, USER_SIGNUP_URL} from "../../app/constants.jsx";
+import {
+    BASE_URL,
+    CHECKOUT_PREMIUM_URL,
+    EMAIL_VERIFICATION_URL,
+    USER_LOGIN_URL,
+    USER_SIGNUP_URL
+} from "../../app/constants.jsx";
 import Cookies from 'js-cookie';
 
 

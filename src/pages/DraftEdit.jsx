@@ -33,7 +33,7 @@ import {
 } from "../features/blogs/blogsThunks.jsx";
 import {clearBlogMessage, clearDraftError, } from "../features/blogs/blogsSlice.jsx";
 import {TopicSelector} from "../components/TopicSelector.jsx";
-import {DRAFT, PUBLISHED} from "../app/constants.jsx";
+import {BASIC, DRAFT, PUBLISHED} from "../app/constants.jsx";
 import {Editor} from "@tinymce/tinymce-react";
 import {Footer} from "../components/Footer.jsx";
 import {mceInit} from "../mceInit.js";
@@ -209,7 +209,7 @@ export const DraftEdit = () => {
         {
             const blogDetails = {
                 blog_title: formValues.blog_title.value,
-                blog_type: 'basic',
+                blog_type: BASIC,
                 blog_topic: formValues.blog_topic.value,
                 blog_summary: formValues.blog_summary.value,
                 blog_content: formValues.blog_content.value,

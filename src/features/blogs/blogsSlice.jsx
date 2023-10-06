@@ -45,11 +45,14 @@ const blogsSlice = createSlice({
             state.draftsStatus= RequestStatus.IDLE
             state.message= null
             state.draftsError= null
+            state.published= []
+            state.publishedStatus= RequestStatus.IDLE
+            state.publishedError= null
         },
         clearExpandedBlog: (state) =>{
             state.expandedBlog= null
             state.expandedBlogError= null
-        }
+        },
     },
     extraReducers(builder) {
         builder
