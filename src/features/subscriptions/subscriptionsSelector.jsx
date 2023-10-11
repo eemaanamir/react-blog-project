@@ -1,0 +1,1 @@
+export const selectSubscription = (state) => state.subscriptions

@@ -1,0 +1,155 @@
+body {
+    margin:0
+}
+
+.imageListDiv{
+    width: 100%;
+    height: 261px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.blogSummaryDiv{
+    width: 390px;
+    align-self: center;
+    justify-self: center;
+    margin-bottom:30px
+}
+
+.blogyHeadingPeriod {
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-right: 480px;
+}
+
+.mainHomeDiv{
+    width:1320px;
+    margin-top: 70px;
+    margin-left: 140px;
+}
+
+
+.draftImageListDiv{
+    width: 360px;
+    height: 230px;
+    display: flex;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.draftSummaryDiv{
+    width: 1000px;
+    align-self: center;
+    justify-self: center;
+    margin-bottom:30px;
+    margin-left: 30px;
+}
+
+.blogDetailHeaderDiv{
+    width: 100%;
+    height: 374px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.blogDetailHeaderOverlayDiv{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 374px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    flex-direction: column;
+}
+
+.blogDetailContentDiv{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    flex-direction: column;
+    align-content:center;
+    align-items: center;
+}
+
+.blogDetailCategorySpan{
+    color:#214252;
+    font-weight:450;
+    padding-right: .5rem;
+}
+
+
+.centerFlexDiv{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+
+
+
+/* For other boilerplate styles, see: /docs/general-configuration-guide/boilerplate-content-css/ */
+/*
+* For rendering images inserted using the image plugin.
+* Includes image captions using the HTML5 figure element.
+*/
+
+figure.image {
+    display: inline-block;
+    border: 1px solid gray;
+    margin: 0 2px 0 1px;
+    background: #f5f2f0;
+}
+
+figure.align-left {
+    float: left;
+}
+
+figure.align-right {
+    float: right;
+}
+
+figure.image img {
+    margin: 8px 8px 0 8px;
+}
+
+figure.image figcaption {
+    margin: 6px 8px 6px 8px;
+    text-align: center;
+}
+
+
+/*
+ Alignment using classes rather than inline styles
+ check out the "formats" option
+*/
+
+img.align-left {
+    float: left;
+}
+
+img.align-right {
+    float: right;
+}
+
+/* Basic styles for Table of Contents plugin (toc) */
+.mce-toc {
+    border: 1px solid gray;
+}
+
+.mce-toc h2 {
+    margin: 4px;
+}
+
+.mce-toc li {
+    list-style-type: none;
+}
+
