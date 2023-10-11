@@ -114,7 +114,7 @@ export const Header = () => {
             setContent(newContent)
         }
 
-    }, [anchorEl, handleDraftsClick, handleEditProfileClick, handleHomeClick, handleLogout, handlePublishedClick, open, user]);
+    }, [setContent, anchorEl, handleDraftsClick, handleEditProfileClick, handleHomeClick, handleLogout, handlePublishedClick, open, user]);
 
     return (
         <>

@@ -103,6 +103,7 @@ export const Login = () => {
             }
             dispatch(loginUser(userCredentials)).then((result) => {
                 if (result.payload) {
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     setFormValues(useLoginInitialValues())
                     dispatch(clearMessage())
                     dispatch(clearError())

@@ -1,5 +1,5 @@
 import { createSlice,} from "@reduxjs/toolkit";
-import {loginUser, signupUser, updateUser, verifyUser} from "./usersThunks.jsx";
+import {fetchUser, loginUser, signupUser, updateUser, verifyUser} from "./usersThunks.jsx";
 import Cookies from 'js-cookie';
 import {PREMIUM} from "../../app/constants.jsx";
 
@@ -112,6 +112,30 @@ const userSlice = createSlice({
                     error: action.error.message
                 }
             })
+            .addCase(fetchUser.pending, (state) =>{
+                return {
+                    ...state,
+                    loading: true,
+                    error: null,
+                };
+            })
+            .addCase(fetchUser.fulfilled, (state, action)=>{
+                return {
+                    ...state,
+                    loading: false,
+                    error: null,
+                    user: action.payload.user,
+                };
+            })
+            .addCase(fetchUser.rejected, (state, action)=>{
+                return {
+                    ...state,
+                    loading: false,
+                    user: null,
+                    error: action.error.message
+                };
+            })
+
     }
 });
 

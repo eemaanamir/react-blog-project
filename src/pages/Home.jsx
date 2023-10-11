@@ -49,7 +49,7 @@ export const Home = () => {
             newContent = <p>Loading...</p>
             setContent(newContent)
         }
-        else if (blogsStatus === RequestStatus.SUCCEEDED){
+        else if (blogsStatus === RequestStatus.SUCCEEDED && user){
             const sortedBlogs = blogs.slice().sort((a, b) => {
                 const dateA = new Date(a.blog_date_time);
                 const dateB = new Date(b.blog_date_time);

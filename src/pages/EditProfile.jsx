@@ -23,7 +23,7 @@ export const EditProfile = () => {
 
 
     //local states
-    const [selectedFile, setSelectedFile] = React.useState(null);
+    // const [selectedFile, setSelectedFile] = React.useState(null);
     const [formValues, setFormValues] = React.useState(useEditProfileInitialValues());
 
     const handleChange = (e) => {
@@ -39,10 +39,10 @@ export const EditProfile = () => {
         dispatch(clearError())
     };
 
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
-    };
+    // const handleFileSelect = (e) => {
+    //     const file = e.target.files[0];
+    //     setSelectedFile(file);
+    // };
 
     const handleMessageClose = () => {dispatch(clearMessage())}
     const handleErrorClose = () => {dispatch(clearError())}
@@ -136,21 +136,21 @@ export const EditProfile = () => {
 
                         <form noValidate onSubmit={handleSubmit}>
 
-                            <div className='centerFlexDiv'>
-                                <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>
-                                <label htmlFor="fileInput">
-                                    <Button
-                                        variant="contained"
-                                        color= 'primary'
-                                        component = "span"
-                                        disabled
-                                        >Upload New Picture</Button>
-                                </label>
-                            </div>
-                            <div className='centerFlexDiv' style={{marginBottom:3}}>
-                                {selectedFile?
-                                    <p>Selected File: {selectedFile.name}</p>: <p></p>}
-                            </div>
+                            {/*<div className='centerFlexDiv'>*/}
+                            {/*    <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none'}} onChange={handleFileSelect} id="fileInput"/>*/}
+                            {/*    <label htmlFor="fileInput">*/}
+                            {/*        <Button*/}
+                            {/*            variant="contained"*/}
+                            {/*            color= 'primary'*/}
+                            {/*            component = "span"*/}
+                            {/*            disabled*/}
+                            {/*            >Upload New Picture</Button>*/}
+                            {/*    </label>*/}
+                            {/*</div>*/}
+                            {/*<div className='centerFlexDiv' style={{marginBottom:3}}>*/}
+                            {/*    {selectedFile?*/}
+                            {/*        <p>Selected File: {selectedFile.name}</p>: <p></p>}*/}
+                            {/*</div>*/}
 
                             <TextField
                                 placeholder="Enter your first name"
